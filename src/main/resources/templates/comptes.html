@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Comptes</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+</head>
+<body>
+    <header>
+        <h1>Liste des Comptes</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Accueil</a></li>
+                <li><a href="/comptes/nouveau">Ajouter un compte</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <!-- Affichage des messages -->
+        <div th:if="${message}" class="success-message">
+            <p th:text="${message}"></p>
+        </div>
+        <div th:if="${error}" class="error-message">
+            <p th:text="${error}"></p>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Numéro de Carte</th>
+                    <th>Titulaire</th>
+                    <th>Montant</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Boucle pour afficher les comptes -->
+                <tr th:each="compte : ${comptes}">
+                    <td th:text="${compte.id}"></td>
+                    <td th:text="${compte.numCarte}"></td>
+                    <td th:text="${compte.titulaire}"></td>
+                    <td th:text="${compte.solde}"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 class="text-center my-4">Effectuer une Transaction</h2>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <form action="/transfert" method="post">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label for="idSource" class="form-label"><i class="bi bi-person"></i>ID Envoyeur</label>
+                                        <input type="number" id="idSource" name="idSource" class="form-control" placeholder="ID Envoyeur" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="idDestination" class="form-label"><i class="bi bi-person"></i>ID Receveur</label>
+                                        <input type="number" id="idDestination" name="idDestination" class="form-control" placeholder="ID Receveur" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="montant" class="form-label"><i class="bi bi-cash"></i>Montant</label>
+                                        <input type="number" id="montant" name="montant" class="form-control" placeholder="Montant" required>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mt-4">
+                                    <a href="/comptes" class="btn btn-outline-secondary">
+                                        <i class="bi bi-x-circle"></i> Annuler
+                                    </a>
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="bi bi-arrow-right-circle"></i> Effectuer la Transaction
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
