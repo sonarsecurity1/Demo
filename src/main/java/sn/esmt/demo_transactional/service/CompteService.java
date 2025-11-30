@@ -1,6 +1,7 @@
 package sn.esmt.demo_transactional.service;
 
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sn.esmt.demo_transactional.model.Compte;
 import sn.esmt.demo_transactional.repository.CompteRepository;
@@ -12,6 +13,7 @@ public class CompteService {
 
     private final CompteRepository compteRepository;
 
+    @Autowired
     public CompteService(CompteRepository compteRepository) {
         this.compteRepository = compteRepository;
     }
