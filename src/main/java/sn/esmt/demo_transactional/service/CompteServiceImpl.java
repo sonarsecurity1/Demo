@@ -6,18 +6,44 @@ import org.springframework.stereotype.Service;
 import sn.esmt.demo_transactional.model.Compte;
 import sn.esmt.demo_transactional.repository.CompteRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CompteService {
+public class CompteServiceImpl implements ICompteService {
 
     private final CompteRepository compteRepository;
 
     @Autowired
-    public CompteService(CompteRepository compteRepository) {
+    public CompteServiceImpl(CompteRepository compteRepository) {
         this.compteRepository = compteRepository;
     }
 
+    @Override
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public List<Compte> findAll() {
+        return compteRepository.findAll();
+    }
+
+    @Override
+    @Transactional
+    public Compte save(Compte compte) {
+        return compteRepository.save(compte);
+    }
+
+    @Override
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public Optional<Compte> findById(Integer id) {
+        return compteRepository.findById(id);
+    }
+
+    @Override
+    @Transactional
+    public void delete(Integer id) {
+        compteRepository.deleteById(id);
+    }
+
+    @Override
     @Transactional
     public void transferer(Integer idSource, Integer idDestination, double montant) {
         Optional<Compte> sourceCompteOpt = compteRepository.findById(idSource);

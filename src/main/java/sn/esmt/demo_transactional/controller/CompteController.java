@@ -1,27 +1,27 @@
 package sn.esmt.demo_transactional.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import sn.esmt.demo_transactional.model.Compte;
-import sn.esmt.demo_transactional.repository.CompteRepository;
-import sn.esmt.demo_transactional.service.CompteService;
+import sn.esmt.demo_transactional.service.ICompteService;
 
-@RestController
+import java.util.Optional;
+
+@Controller
 public class CompteController {
 
-    private final CompteRepository compteRepository;
-    private final CompteService compteService;
+    private final ICompteService compteService;
 
     @Autowired
-    public CompteController(CompteRepository compteRepository, CompteService compteService) {
-        this.compteRepository = compteRepository;
+    public CompteController(ICompteService compteService) {
         this.compteService = compteService;
     }
 
     @GetMapping("/")
-    public String home(Compte compte, Model model) {
-        model.addAttribute("comptes", compteRepository.findAll());
+    public String home(Model model) {
+        model.addAttribute("comptes", compteService.findAll());
         return "home";
     }
 
@@ -33,13 +33,13 @@ public class CompteController {
         } catch (RuntimeException e) {
             model.addAttribute("error", "Échec du transfert : " + e.getMessage());
         }
-        model.addAttribute("comptes", compteRepository.findAll());
+        model.addAttribute("comptes", compteService.findAll());
         return "comptes";
     }
 
     @GetMapping("/comptes")
     public String afficherComptes(Model model) {
-        model.addAttribute("comptes", compteRepository.findAll());
+        model.addAttribute("comptes", compteService.findAll());
         return "comptes";
     }
 
@@ -50,8 +50,25 @@ public class CompteController {
     }
 
     @PostMapping("/comptes")
-    public String creerCompte(@ModelAttribute Compte compte) {
-        compteRepository.save(compte); // Sauvegarde du nouveau compte
-        return "redirect:/comptes"; // Redirection vers la page des comptes
+    public String enregistrerCompte(@ModelAttribute Compte compte) {
+        compteService.save(compte);
+        return "redirect:/comptes";
+    }
+
+    @GetMapping("/comptes/modifier/{id}")
+    public String afficherFormulaireModification(@PathVariable("id") Integer id, Model model) {
+        Optional<Compte> compte = compteService.findById(id);
+        if (compte.isPresent()) {
+            model.addAttribute("compte", compte.get());
+            return "form";
+        } else {
+            return "redirect:/comptes";
+        }
+    }
+
+    @GetMapping("/comptes/supprimer/{id}")
+    public String supprimerCompte(@PathVariable("id") Integer id) {
+        compteService.delete(id);
+        return "redirect:/comptes";
     }
 }
